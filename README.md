@@ -43,3 +43,10 @@ The following features have been prioritized based on the needs of our primary p
 | **Guest/Parent View** | #43 | Useful for parents, but not Marcus's core goal. |
 | **Accessibility Mode** | #37 | Essential for inclusivity in later versions. |
 | **Campus News Feed** | #39 | General community engagement (Non-core feature). |
+
+
+---
+## System Architecture
+This diagram illustrates the 3-tier architecture designed to solve Marcus Chen's needs for security, efficiency, and privacy.
+
+![System Architecture](./docs/system-architecture.drawio.png)
