@@ -73,3 +73,23 @@ This diagram illustrates the data structure for Users, Items, and Messages, ensu
 * **Tool Used:** Gemini (Google AI)
 * **Purpose:** Brainstorming the 3-tier system architecture and refining the ERD to include safety features like `is_verified`.
 * **Human Oversight:** All AI suggestions were manually reviewed and modified to fit the CSE 4630 Milestone 2 rubric.
+
+---
+## Component Architecture (Atomic Design)
+To ensure a consistent and reusable UI for the Product Catalog, we are following Atomic Design principles.
+
+### Atoms (Smallest functional units)
+* **Button:** Red/Gray action buttons for "View Details" or "Message Seller."
+* **Input Field:** Search bar text entry.
+* **Badge:** Price tags and condition labels (e.g., "Like New").
+* **Typography:** Specific font styles for book titles and headers.
+
+### Molecules (Groups of atoms working together)
+* **Search Bar:** Combines the Input atom with a Search Button atom.
+* **Item Card Snippet:** Combines a book image, title atom, and price badge.
+* **Filter Toggle:** Group of checkboxes for filtering by category (e.g., "CSE," "Mechanical").
+
+### Organisms (Complex UI sections)
+* **Product Grid:** A collection of Item Card molecules showing all available textbooks.
+* **Navigation Bar:** The top header containing the logo, Search Bar, and User Profile link.
+* **Sidebar Filter:** The section containing all category and price range Molecules.
