@@ -56,3 +56,20 @@ This diagram illustrates the 3-tier architecture designed to solve Marcus Chen's
 This diagram illustrates the data structure for Users, Items, and Messages, ensuring a secure and organized marketplace for Marcus Chen.
 
 ![Database ERD](./docs/Entity%20Relationship%20Diagram.drawio.png)
+
+## Architecture Decision Records (ADR)
+
+### Tech Stack Selection
+* **Frontend:** React.js / Next.js
+    * *Why:* Allows for a responsive design that Marcus can use on his phone while walking between classes.
+* **Backend:** Node.js with Express
+    * *Why:* Fast and scalable for handling real-time messaging between students.
+* **Database:** PostgreSQL
+    * *Why:* Reliable storage for user verification data and item listings.
+* **Authentication:** OSU Webauth / OpenID Connect
+    * *Why:* Ensures only verified Buckeyes can log in, solving Marcus’s fear of scammers.
+
+### AI Tool Usage
+* **Tool Used:** Gemini (Google AI)
+* **Purpose:** Brainstorming the 3-tier system architecture and refining the ERD to include safety features like `is_verified`.
+* **Human Oversight:** All AI suggestions were manually reviewed and modified to fit the CSE 4630 Milestone 2 rubric.
