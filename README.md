@@ -50,3 +50,9 @@ The following features have been prioritized based on the needs of our primary p
 This diagram illustrates the 3-tier architecture designed to solve Marcus Chen's needs for security, efficiency, and privacy.
 
 ![System Architecture](./docs/system-architecture.drawio.png)
+
+---
+## Database Entity Relationship Diagram (ERD)
+This diagram illustrates the data structure for Users, Items, and Messages, ensuring a secure and organized marketplace for Marcus Chen.
+
+![Database ERD](./docs/Entity%20Relationship%20Diagram.drawio.png)
