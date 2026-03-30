@@ -1,34 +1,59 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState, useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import './App.css'
+import { useCart } from './context/CartContext'
+import CartPage from './pages/CartPage'
+
+// This component handles the Home/Store view
+function ProductList({ products, addToCart }) {
+  return (
+    <main className="product-grid">
+      {products.map(product => (
+        <div key={product.id} className="product-card">
+          <h3>{product.title}</h3>
+          <p className="price">${product.price}</p>
+          <p className="condition">{product.condition}</p>
+          <button onClick={() => addToCart(product)}>
+            Add to Cart
+          </button>
+        </div>
+      ))}
+    </main>
+  );
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [products, setProducts] = useState([]);
+  const { cart, addToCart } = useCart(); // Access 'cart' to show the count
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/products')
+      .then(res => res.json())
+      .then(data => setProducts(data))
+      .catch(err => console.error("Error fetching products:", err));
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <Router>
+      <div className="app-container">
+        <header>
+          <h1>Buckeye Marketplace</h1>
+          <nav className="navbar">
+            <Link to="/" className="nav-link">Store</Link>
+            <Link to="/cart" className="nav-link">View Cart ({cart.length})</Link>
+          </nav>
+          <div className="cart-status">
+            <span>🛒 Status: {products.length > 0 ? "Products Loaded" : "Connecting to API..."}</span>
+          </div>
+        </header>
+
+        {/* This "Routes" block is the switcher that swaps the page content */}
+        <Routes>
+          <Route path="/" element={<ProductList products={products} addToCart={addToCart} />} />
+          <Route path="/cart" element={<CartPage />} />
+        </Routes>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </Router>
   )
 }
 
