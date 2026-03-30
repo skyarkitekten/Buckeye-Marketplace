@@ -1,0 +1,13 @@
+# .NET
+**/bin/
+**/obj/
+*.user
+*.suo
+
+# Node / React
+node_modules/
+dist/
+
+# IDE & OS
+.vscode/
+.DS_Store
