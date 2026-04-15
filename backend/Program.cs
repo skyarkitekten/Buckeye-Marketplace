@@ -12,20 +12,20 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=buckeyemarket.db"));
 
 // 2. Identity Configuration (Milestone 5)
+// Updated to include Role services
 builder.Services.AddIdentityCore<IdentityUser>(options => {
     options.Password.RequireDigit = true;
-    options.Password.RequireUppercase = true; // Added to meet rubric: "at least one uppercase letter"
+    options.Password.RequireUppercase = true; 
     options.Password.RequiredLength = 8;
 })
-.AddRoles<IdentityRole>()
+.AddRoles<IdentityRole>() // This is crucial for Admin features!
+.AddRoleManager<RoleManager<IdentityRole>>()
 .AddEntityFrameworkStores<AppDbContext>();
 
 // 3. Authentication & JWT (Milestone 5)
-// No fallback string here — strictly pulling from configuration/secrets
 var jwtKey = builder.Configuration["Jwt:Key"]; 
 if (string.IsNullOrEmpty(jwtKey))
 {
-    // This helps you troubleshoot: if the app crashes, you forgot to run 'dotnet user-secrets set'
     throw new Exception("JWT Key is missing! Run 'dotnet user-secrets set \"Jwt:Key\" \"YOUR_KEY\"' in the backend folder.");
 }
 
@@ -42,7 +42,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization(options => {
-    // Ensuring Admin role policy is ready for Section 5 of the rubric
     options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
 });
 
@@ -57,10 +56,47 @@ var app = builder.Build();
 
 app.UseCors();
 
-// 5. Middleware Pipeline (Order Matters!)
+// 5. Middleware Pipeline
 app.UseAuthentication(); 
 app.UseAuthorization();
 
 app.MapControllers(); 
+
+// --- SEEDING LOGIC START (Milestone 5 Requirement) ---
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+    // Create Roles if they don't exist
+    string[] roles = { "Admin", "Student" };
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
+
+    // Seed Admin User
+    var adminEmail = "admin@osu.edu";
+    if (await userManager.FindByEmailAsync(adminEmail) == null)
+    {
+        var admin = new IdentityUser { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true };
+        await userManager.CreateAsync(admin, "Admin123!");
+        await userManager.AddToRoleAsync(admin, "Admin");
+    }
+
+    // Seed Regular User
+    var studentEmail = "student@osu.edu";
+    if (await userManager.FindByEmailAsync(studentEmail) == null)
+    {
+        var student = new IdentityUser { UserName = studentEmail, Email = studentEmail, EmailConfirmed = true };
+        await userManager.CreateAsync(student, "Student123!");
+        await userManager.AddToRoleAsync(student, "Student");
+    }
+}
+// --- SEEDING LOGIC END ---
 
 app.Run();
